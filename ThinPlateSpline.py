@@ -10,7 +10,7 @@ def ThinPlateSpline(U, coord, vector, out_size):
     Relative coordinate of the control points.
   vector : float Tensor [num_batch, num_point, 2]
     The vector on the control points.
-  out_size: tuple of two ints
+  out_size: tuple of two integers [height, width]
     The size of the output of the network (height, width)
   ----------
   Reference :
