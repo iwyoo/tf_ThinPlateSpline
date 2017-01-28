@@ -36,9 +36,9 @@ v = tf.constant(v.reshape([1, 4, 2]), dtype=tf.float32)
 t_img = tf.constant(img.reshape(shape), dtype=tf.float32)
 t_img = stn(t_img, p, v, out_size)
 ```
+![alt tag](original.png) original.png
 
-![alt tag](original.png)
-![alt tag](transformed.png)
+![alt tag](transformed.png) transformed.png
 
 ## References
 - [Robust Scene Text Recognition with Automatic Rectification] (https://arxiv.org/abs/1603.03915)
