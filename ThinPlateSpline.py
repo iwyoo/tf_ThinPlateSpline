@@ -101,8 +101,8 @@ def ThinPlateSpline(U, coord, vector, out_size):
     num_batch = tf.shape(coord)[0]
     px = tf.expand_dims(coord[:,:,0], 2) # [bn, pn, 1]
     py = tf.expand_dims(coord[:,:,1], 2) # [bn, pn, 1]
-    d = tf.sqrt(tf.pow(x_t_flat - px, 2.) + tf.pow(y_t_flat - py, 2.))
-    r = tf.pow(d, 2) * tf.log(d + 1e-6) # [bn, pn, h*w]
+    d2 = tf.square(x_t_flat - px) + tf.square(y_t_flat - py)
+    r = d2 * tf.log(d2 + 1e-6) # [bn, pn, h*w]
     x_t_flat_g = tf.tile(x_t_flat, tf.pack([num_batch, 1, 1])) # [bn, 1, h*w]
     y_t_flat_g = tf.tile(y_t_flat, tf.pack([num_batch, 1, 1])) # [bn, 1, h*w]
     ones = tf.ones_like(x_t_flat_g) # [bn, 1, h*w]
@@ -148,8 +148,8 @@ def ThinPlateSpline(U, coord, vector, out_size):
 
     p_1 = tf.reshape(p, [num_batch, -1, 1, 3]) # [bn, pn, 1, 3]
     p_2 = tf.reshape(p, [num_batch, 1, -1, 3]) # [bn, 1, pn, 3]
-    d = tf.sqrt(tf.reduce_sum((p_1-p_2)**2, 3)) # [bn, pn, pn]
-    r = d*d*tf.log(d*d+1e-5) # [bn, pn, pn]
+    d2 = tf.reduce_sum(tf.square(p_1-p_2), 3) # [bn, pn, pn]
+    r = d2 * tf.log(d2 + 1e-6) # [bn, pn, pn]
 
     zeros = tf.zeros([num_batch, 3, 3], dtype="float32")
     W_0 = tf.concat(2, [p, r]) # [bn, pn, 3+pn]
