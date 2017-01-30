@@ -51,10 +51,10 @@ s_ = np.array([ # source position
   [0.5, 0.5]])
 
 t_ = np.array([ # target position
-  [-0.6, -0.6],
-  [0.6, -0.6],
-  [-0.6, 0.6],
-  [0.6, 0.6]])
+  [-0.3, -0.3],
+  [0.3, -0.3],
+  [-0.3, 0.3],
+  [0.3, 0.3]])
 
 s = tf.constant(s_.reshape([1, 4, 2]), dtype=tf.float32)
 t = tf.constant(t_.reshape([1, 4, 2]), dtype=tf.float32)

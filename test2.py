@@ -7,17 +7,17 @@ img = np.array(Image.open("original.png"))
 out_size = list(img.shape)
 shape = [1]+out_size+[1]
 
-s_ = np.array([
+s_ = np.array([ # source position
   [-0.5, -0.5],
   [0.5, -0.5],
   [-0.5, 0.5],
   [0.5, 0.5]])
 
-t_ = np.array([
-  [-0.6, -0.6],
-  [0.6, -0.6],
-  [-0.6, 0.6],
-  [0.6, 0.6]])
+t_ = np.array([ # target position
+  [-0.3, -0.3],
+  [0.3, -0.3],
+  [-0.3, 0.3],
+  [0.3, 0.3]])
 
 s = tf.constant(s_.reshape([1, 4, 2]), dtype=tf.float32)
 t = tf.constant(t_.reshape([1, 4, 2]), dtype=tf.float32)
