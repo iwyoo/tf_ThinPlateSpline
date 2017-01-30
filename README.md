@@ -52,7 +52,7 @@ s_ = np.array([ # source position
 
 t_ = np.array([ # target position
   [-0.6, -0.6],
-  [0.6, 0.6],
+  [0.6, -0.6],
   [-0.6, 0.6],
   [0.6, 0.6]])
 
