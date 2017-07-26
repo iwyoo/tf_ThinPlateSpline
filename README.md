@@ -1,5 +1,5 @@
 # tf_ThinPlateSpline
-TensorFlow implementation of Thin Plate Spline (TPS) Spatial Transformer Network (STN). The old version implementation based on [STN paper] (https://arxiv.org/abs/1506.02025) is [TPS_STN](https://github.com/iwyoo/TPS_STN-tensorflow). This implmentation, however, can work with non-fixed control points. Each solution of TPS system is dynamically calculated every feed-forward step.
+TensorFlow implementation of Thin Plate Spline (TPS) Spatial Transformer Network (STN). The old version implementation based on [STN paper](https://arxiv.org/abs/1506.02025) is [TPS_STN](https://github.com/iwyoo/TPS_STN-tensorflow). This implmentation, however, can work with non-fixed control points. Each solution of TPS system is dynamically calculated every feed-forward step.
 
 ```
 Usage :
