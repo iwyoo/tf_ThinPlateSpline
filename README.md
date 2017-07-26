@@ -4,16 +4,24 @@ TensorFlow implementation of Thin Plate Spline (TPS) Spatial Transformer Network
 ```
 Usage :
   V = ThinPlateSpline(U, coord, vector, out_size)
+  V = ThinPlateSpline2(U, source, target, out_size)
 
 Args :
   U : float Tensor [num_batch, height, width, num_channels].
     Input Tensor.
   coord : float Tensor [num_batch, num_point, 2]
-    Relative coordinate of the control points.
+    Relative coordinates of the control points.
   vector : float Tensor [num_batch, num_point, 2]
     The vector on the control points.
   out_size: tuple of two integers [height, width]
     The size of the output of the network (height, width)
+
+  For version 2.
+    source : float Tensor [num_batch, num_point, 2]
+      Relative coordinates of the source points.
+    target : float Tensor [num_batch, num_point, 2]
+      Relative coordinates of the target points.
+
 ```
 
 ## Example
@@ -34,7 +42,7 @@ v = np.array([
 p = tf.constant(p.reshape([1, 4, 2]), dtype=tf.float32)
 v = tf.constant(v.reshape([1, 4, 2]), dtype=tf.float32)
 t_img = tf.constant(img.reshape(shape), dtype=tf.float32)
-t_img = stn(t_img, p, v, out_size)
+t_img = ThinPlateSpline(t_img, p, v, out_size)
 ```
 ![alt tag](original.png) original.png
 
@@ -59,7 +67,7 @@ t_ = np.array([ # target position
 s = tf.constant(s_.reshape([1, 4, 2]), dtype=tf.float32)
 t = tf.constant(t_.reshape([1, 4, 2]), dtype=tf.float32)
 t_img = tf.constant(img.reshape(shape), dtype=tf.float32)
-t_img = stn(t_img, s, t, out_size)
+t_img = ThinPlateSpline2(t_img, s, t, out_size)
 ```
 ![alt tag](original.png) original.png
 
