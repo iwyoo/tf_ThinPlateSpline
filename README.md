@@ -25,6 +25,7 @@ Args :
 ```
 
 ## Example
+### Version 1
 ```python
 # test.py
 p = np.array([
@@ -49,7 +50,7 @@ t_img = ThinPlateSpline(t_img, p, v, out_size)
 ![alt tag](transformed.png) transformed.png
 
 
-### Update. (Another version TPS)
+### Version 2
 ```python
 # test2.py
 s_ = np.array([ # source position
