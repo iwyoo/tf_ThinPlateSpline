@@ -75,7 +75,7 @@ t_img = ThinPlateSpline2(t_img, s, t, out_size)
 ![alt tag](transformed2.png) transformed2.png
 
 ## References
-- [Robust Scene Text Recognition with Automatic Rectification] (https://arxiv.org/abs/1603.03915)
-- [Spatial Transformer Network] (https://arxiv.org/abs/1506.02025)
+- [Robust Scene Text Recognition with Automatic Rectification](https://arxiv.org/abs/1603.03915)
+- [Spatial Transformer Network](https://arxiv.org/abs/1506.02025)
 - [TensorFlow STN implementation](https://github.com/daviddao/spatial-transformer-tensorflow/blob/master/spatial_transformer.py)
 - [Thin Plate Spline with control points on regular grid implementation](https://github.com/iwyoo/TPS_STN-tensorflow)
