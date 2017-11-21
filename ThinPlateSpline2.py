@@ -22,7 +22,7 @@ def ThinPlateSpline2(U, source, target, out_size):
 
   def _repeat(x, n_repeats):
     rep = tf.transpose(
-      tf.expand_dims(tf.ones(shape=tf.pack([n_repeats, ])), 1), [1, 0])
+      tf.expand_dims(tf.ones(shape=tf.stack([n_repeats, ])), 1), [1, 0])
     rep = tf.cast(rep, 'int32')
     x = tf.matmul(tf.reshape(x, (-1, 1)), rep)
     return tf.reshape(x, [-1])
@@ -70,7 +70,7 @@ def ThinPlateSpline2(U, source, target, out_size):
 
     # use indices to lookup pixels in the flat image and restore
     # channels dim
-    im_flat = tf.reshape(im, tf.pack([-1, channels]))
+    im_flat = tf.reshape(im, tf.stack([-1, channels]))
     im_flat = tf.cast(im_flat, 'float32')
     Ia = tf.gather(im_flat, idx_a)
     Ib = tf.gather(im_flat, idx_b)
@@ -103,11 +103,11 @@ def ThinPlateSpline2(U, source, target, out_size):
     py = tf.expand_dims(source[:,:,1], 2) # [bn, pn, 1]
     d2 = tf.square(x_t_flat - px) + tf.square(y_t_flat - py)
     r = d2 * tf.log(d2 + 1e-6) # [bn, pn, h*w]
-    x_t_flat_g = tf.tile(x_t_flat, tf.pack([num_batch, 1, 1])) # [bn, 1, h*w]
-    y_t_flat_g = tf.tile(y_t_flat, tf.pack([num_batch, 1, 1])) # [bn, 1, h*w]
+    x_t_flat_g = tf.tile(x_t_flat, tf.stack([num_batch, 1, 1])) # [bn, 1, h*w]
+    y_t_flat_g = tf.tile(y_t_flat, tf.stack([num_batch, 1, 1])) # [bn, 1, h*w]
     ones = tf.ones_like(x_t_flat_g) # [bn, 1, h*w]
 
-    grid = tf.concat(1, [ones, x_t_flat_g, y_t_flat_g, r]) # [bn, 3+pn, h*w]
+    grid = tf.concat([ones, x_t_flat_g, y_t_flat_g, r], 2) # [bn, 3+pn, h*w]
     return grid
 
   def _transform(T, source, input_dim, out_size):
@@ -125,7 +125,7 @@ def ThinPlateSpline2(U, source, target, out_size):
 
     # transform A x (1, x_t, y_t, r1, r2, ..., rn) -> (x_s, y_s)
     # [bn, 2, pn+3] x [bn, pn+3, h*w] -> [bn, 2, h*w]
-    T_g = tf.batch_matmul(T, grid) #
+    T_g = tf.matmul(T, grid) #
     x_s = tf.slice(T_g, [0, 0, 0], [-1, 1, -1])
     y_s = tf.slice(T_g, [0, 1, 0], [-1, 1, -1])
     x_s_flat = tf.reshape(x_s, [-1])
@@ -136,7 +136,7 @@ def ThinPlateSpline2(U, source, target, out_size):
 
     output = tf.reshape(
       input_transformed, 
-      tf.pack([num_batch, out_height, out_width, num_channels]))
+      tf.stack([num_batch, out_height, out_width, num_channels]))
     return output
 
   def _solve_system(source, target):
@@ -144,7 +144,7 @@ def ThinPlateSpline2(U, source, target, out_size):
     num_point  = tf.shape(source)[1]
     
     ones = tf.ones([num_batch, num_point, 1], dtype="float32")
-    p = tf.concat(2, [ones, source]) # [bn, pn, 3]
+    p = tf.concat([ones, source], 2) # [bn, pn, 3]
 
     p_1 = tf.reshape(p, [num_batch, -1, 1, 3]) # [bn, pn, 1, 3]
     p_2 = tf.reshape(p, [num_batch, 1, -1, 3]) # [bn, 1, pn, 3]
@@ -152,15 +152,14 @@ def ThinPlateSpline2(U, source, target, out_size):
     r = d2 * tf.log(d2 + 1e-6) # [bn, pn, pn]
 
     zeros = tf.zeros([num_batch, 3, 3], dtype="float32")
-    W_0 = tf.concat(2, [p, r]) # [bn, pn, 3+pn]
-    W_1 = tf.concat(2, [
-      zeros, tf.transpose(p, [0, 2, 1])]) # [bn, 3, pn+3]
-    W = tf.concat(1, [W_0, W_1]) # [bn, pn+3, pn+3]
+    W_0 = tf.concat([p, r], w) # [bn, pn, 3+pn]
+    W_1 = tf.concat([zeros, tf.transpose(p, [0, 2, 1])], 2) # [bn, 3, pn+3]
+    W = tf.concat([W_0, W_1], 1) # [bn, pn+3, pn+3]
     W_inv = tf.matrix_inverse(W) 
 
     tp = tf.pad(target, 
       [[0, 0], [0, 3], [0, 0]], "CONSTANT") # [bn, pn+3, 2]
-    T = tf.batch_matmul(W_inv, tp) # [bn, pn+3, 2]
+    T = tf.matmul(W_inv, tp) # [bn, pn+3, 2]
     T = tf.transpose(T, [0, 2, 1]) # [bn, 2, pn+3]
 
     return T
