@@ -107,7 +107,7 @@ def ThinPlateSpline2(U, source, target, out_size):
     y_t_flat_g = tf.tile(y_t_flat, tf.stack([num_batch, 1, 1])) # [bn, 1, h*w]
     ones = tf.ones_like(x_t_flat_g) # [bn, 1, h*w]
 
-    grid = tf.concat([ones, x_t_flat_g, y_t_flat_g, r], 2) # [bn, 3+pn, h*w]
+    grid = tf.concat([ones, x_t_flat_g, y_t_flat_g, r], 1) # [bn, 3+pn, h*w]
     return grid
 
   def _transform(T, source, input_dim, out_size):
@@ -152,7 +152,7 @@ def ThinPlateSpline2(U, source, target, out_size):
     r = d2 * tf.log(d2 + 1e-6) # [bn, pn, pn]
 
     zeros = tf.zeros([num_batch, 3, 3], dtype="float32")
-    W_0 = tf.concat([p, r], w) # [bn, pn, 3+pn]
+    W_0 = tf.concat([p, r], 2) # [bn, pn, 3+pn]
     W_1 = tf.concat([zeros, tf.transpose(p, [0, 2, 1])], 2) # [bn, 3, pn+3]
     W = tf.concat([W_0, W_1], 1) # [bn, pn+3, pn+3]
     W_inv = tf.matrix_inverse(W) 
